@@ -1,0 +1,29 @@
+name: "CI"
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        django_version: ['3.2.24', '4.2.10']
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Python 3.8
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+
+      - name: "Install dependencies with Django ${{ matrix.django_version }}"
+        run: pip install -e . -r requirements-dev.txt Django==${{ matrix.django_version }}
+
+      - name: Show dependencies
+        run: pip list
+
+      - name: Run tests
+        run: pytest
